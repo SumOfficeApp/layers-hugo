@@ -19,7 +19,7 @@ jobs:
           cp samples/service-agreement.docx exampleSite/static/files/
           cd exampleSite && /tmp/hugo --minify -d /tmp/out
           grep -o 'https://app.layers.md/v1/public/viewer/open#[^"]*' /tmp/out/index.html | head -1 | tee /tmp/link
-          grep -q 'app.layers.md/t/invoice-template-with-tax-calculation?embed=1' /tmp/out/index.html
+          grep -q 'app.layers.md/t/freelance-invoice-payment-reminder?embed=1' /tmp/out/index.html
       - name: The link opens a real document in Layers
         run: |
           node --input-type=module -e '

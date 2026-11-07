@@ -23,7 +23,7 @@ hugo mod init github.com/you/your-site   # once, if your site is not a module ye
 ```markdown
 {{</* layers-doc src="/files/service-agreement.docx" title="Service agreement" */>}}
 
-{{</* layers-form slug="invoice-template-with-tax-calculation" height="720" */>}}
+{{</* layers-form slug="freelance-invoice-payment-reminder" height="720" */>}}
 ```
 
 | Shortcode | Parameters |
