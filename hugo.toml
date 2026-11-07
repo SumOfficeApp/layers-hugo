@@ -1,0 +1,4 @@
+# Hugo module: shortcodes layers-doc and layers-form.
+[module]
+  [module.hugoVersion]
+    min = "0.110.0"

@@ -1,0 +1,5 @@
+{{- /* Live document from the Layers catalog, filled in right on the page. */ -}}
+{{- $slug := .Get "slug" | default (.Get 0) -}}
+{{- $height := .Get "height" | default "760" -}}
+{{- $from := .Get "from" | default (printf "door-hugo-%s" (replaceRE "^www\\." "" (urls.Parse site.BaseURL).Host)) -}}
+<iframe class="layers-form" src="https://app.layers.md/t/{{ $slug }}?embed=1&amp;from={{ $from }}" height="{{ $height }}" loading="lazy" title="{{ .Get "title" | default $slug }}" style="width:100%;border:1px solid #ddd;border-radius:10px;background:#fff"></iframe>

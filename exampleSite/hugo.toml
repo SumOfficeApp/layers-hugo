@@ -1,0 +1,5 @@
+baseURL = "https://example.org/"
+title = "Example"
+theme = "layers-hugo"
+themesDir = "../.."
+disableKinds = ["taxonomy", "term", "RSS", "sitemap"]

@@ -1,0 +1,34 @@
+name: self-test
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Hugo
+        run: |
+          curl -sSL -o /tmp/hugo.tgz https://github.com/gohugoio/hugo/releases/download/v0.140.2/hugo_0.140.2_linux-amd64.tar.gz
+          tar -xzf /tmp/hugo.tgz -C /tmp hugo && /tmp/hugo version
+      - name: Build the example site with both shortcodes
+        run: |
+          cp samples/service-agreement.docx exampleSite/static/files/
+          cd exampleSite && /tmp/hugo --minify -d /tmp/out
+          grep -o 'https://app.layers.md/v1/public/viewer/open#[^"]*' /tmp/out/index.html | head -1 | tee /tmp/link
+          grep -q 'app.layers.md/t/invoice-template-with-tax-calculation?embed=1' /tmp/out/index.html
+      - name: The link opens a real document in Layers
+        run: |
+          node --input-type=module -e '
+          import fs from "node:fs";
+          const link = fs.readFileSync("/tmp/link", "utf8").trim().replace(/&amp;/g, "&");
+          const p = new URLSearchParams(new URL(link).hash.slice(1));
+          if (!p.get("url").endsWith("/files/service-agreement.docx")) throw new Error("bad url " + p.get("url"));
+          const src = "https://raw.githubusercontent.com/" + process.env.GITHUB_REPOSITORY + "/" + process.env.GITHUB_SHA + "/samples/service-agreement.docx";
+          const r = await fetch("https://app.layers.md/v1/public/viewer/import", { method: "POST", headers: { "Content-Type": "application/json", "User-Agent": "layers-hugo-self-test LayersQA-bot/1.0" }, body: JSON.stringify({ url: src, from: p.get("from") }) });
+          const b = await r.json();
+          if (!r.ok || !b.openUrl) throw new Error(JSON.stringify(b));
+          console.log("ok", p.get("from"), b.kind);'
